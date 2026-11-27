@@ -105,7 +105,13 @@ function mostrarTodosLosProductos() {
 // EJERCICIO 2 — Buscador y código promocional (RegExp)
 // ============================================================
 function buscarProductos() {
-  // TODO
+  const texto = document.getElementById("inputBusqueda").value.trim();
+  const busqueda = texto.toLowerCase();
+
+  // Cadena vacía: se muestra todo el catálogo
+  pintarCatalogo(productos.filter((p) => p.nombre.toLowerCase().includes(busqueda)));
+
+  guardarBusquedaEnHistorial(texto);
 }
 
 function validarCodigoPromocional() {
