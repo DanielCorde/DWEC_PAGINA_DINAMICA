@@ -128,20 +128,91 @@ function validarCodigoPromocional() {
 // ============================================================
 // EJERCICIO 3 — Carrito de compra (localStorage)
 // ============================================================
+const CLAVE_CARRITO = "carritoTienda";
+
+/**
+ * Lee el carrito del localStorage.
+ * @returns {Array<{id:number,nombre:string,precio:number,cantidad:number}>}
+ */
+function obtenerCarrito() {
+  return JSON.parse(localStorage.getItem(CLAVE_CARRITO)) || [];
+}
+
+/**
+ * Guarda el carrito en el localStorage.
+ * @param {Array} carrito
+ */
+function guardarCarrito(carrito) {
+  localStorage.setItem(CLAVE_CARRITO, JSON.stringify(carrito));
+}
+
+/**
+ * Añade un producto al carrito (o incrementa su cantidad en 1).
+ * @param {number} idProducto
+ */
 function anadirAlCarrito(idProducto) {
-  // TODO
+  const producto = productos.find((p) => p.id === idProducto);
+  if (!producto) return;
+
+  const carrito = obtenerCarrito();
+  const item = carrito.find((i) => i.id === idProducto);
+
+  if (item) {
+    item.cantidad++;
+  } else {
+    carrito.push({
+      id: producto.id,
+      nombre: producto.nombre,
+      precio: producto.precio,
+      cantidad: 1
+    });
+  }
+
+  guardarCarrito(carrito);
+  pintarCarrito();
 }
 
+/**
+ * Elimina por completo un producto del carrito.
+ * @param {number} idProducto
+ */
 function eliminarDelCarrito(idProducto) {
-  // TODO
+  guardarCarrito(obtenerCarrito().filter((i) => i.id !== idProducto));
+  pintarCarrito();
 }
 
+/**
+ * Vacía el carrito y refresca la pantalla.
+ */
 function vaciarCarrito() {
-  // TODO
+  localStorage.removeItem(CLAVE_CARRITO);
+  pintarCarrito();
 }
 
+/**
+ * Pinta el contenido del carrito en #cuerpoCarrito y el total en #totalCarrito.
+ */
 function pintarCarrito() {
-  // TODO
+  const cuerpo = document.getElementById("cuerpoCarrito");
+  cuerpo.innerHTML = "";
+  let total = 0;
+
+  obtenerCarrito().forEach((item) => {
+    const subtotal = item.precio * item.cantidad;
+    total += subtotal;
+
+    const fila = document.createElement("tr");
+    fila.innerHTML = `
+      <td>${item.nombre}</td>
+      <td>${item.precio.toFixed(2)} €</td>
+      <td>${item.cantidad}</td>
+      <td>${subtotal.toFixed(2)} €</td>
+      <td><button onclick="eliminarDelCarrito(${item.id})">Eliminar</button></td>
+    `;
+    cuerpo.appendChild(fila);
+  });
+
+  document.getElementById("totalCarrito").textContent = `Total: ${total.toFixed(2)} €`;
 }
 
 // ============================================================
