@@ -115,7 +115,14 @@ function buscarProductos() {
 }
 
 function validarCodigoPromocional() {
-  // TODO
+  const codigo = document.getElementById("inputPromo").value;
+  const mensaje = document.getElementById("mensajePromo");
+  const valido = /^[A-Z]{3}[0-9]{4}$/.test(codigo);
+
+  mensaje.textContent = valido
+    ? "Código válido. Descuento aplicado en el siguiente paso de compra."
+    : "Código no válido. Formato esperado: 3 letras mayúsculas + 4 dígitos (ej. ABC1234).";
+  mensaje.style.color = valido ? "green" : "red";
 }
 
 // ============================================================
